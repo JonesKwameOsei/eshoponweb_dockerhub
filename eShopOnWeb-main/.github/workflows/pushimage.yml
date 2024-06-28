@@ -25,4 +25,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: kwameds/eshoponweb:1.0.1
+          tags: kwameds/eshoponweb:1.0.0
