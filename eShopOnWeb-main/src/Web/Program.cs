@@ -33,36 +33,20 @@ if (builder.Environment.IsDevelopment() || builder.Environment.EnvironmentName =
 else
 {
     // Configure SQL Server (prod)
-    var keyVaultEndpoint = builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"];
-    if (!string.IsNullOrEmpty(keyVaultEndpoint))
+    var credential = new ChainedTokenCredential(new AzureDeveloperCliCredential(), new DefaultAzureCredential());
+    builder.Configuration.AddAzureKeyVault(new Uri(builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"] ?? ""), credential);
+    builder.Services.AddDbContext<CatalogContext>(c =>
     {
-        var credential = new ChainedTokenCredential(new AzureDeveloperCliCredential(), new DefaultAzureCredential());
-        builder.Configuration.AddAzureKeyVault(new Uri(keyVaultEndpoint), credential);
-    }
-
-    var catalogConnectionStringKey = builder.Configuration["AZURE_SQL_CATALOG_CONNECTION_STRING_KEY"];
-    var identityConnectionStringKey = builder.Configuration["AZURE_SQL_IDENTITY_CONNECTION_STRING_KEY"];
-
-    if (!string.IsNullOrEmpty(catalogConnectionStringKey))
+        var connectionString = builder.Configuration[builder.Configuration["AZURE_SQL_CATALOG_CONNECTION_STRING_KEY"] ?? ""];
+        c.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure());
+    });
+    builder.Services.AddDbContext<AppIdentityDbContext>(options =>
     {
-        builder.Services.AddDbContext<CatalogContext>(c =>
-        {
-            var connectionString = builder.Configuration[catalogConnectionStringKey];
-            c.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure());
-        });
-    }
-
-    if (!string.IsNullOrEmpty(identityConnectionStringKey))
-    {
-        builder.Services.AddDbContext<AppIdentityDbContext>(options =>
-        {
-            var connectionString = builder.Configuration[identityConnectionStringKey];
-            options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure());
-        });
-    }
+        var connectionString = builder.Configuration[builder.Configuration["AZURE_SQL_IDENTITY_CONNECTION_STRING_KEY"] ?? ""];
+        options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure());
+    });
 }
 
-// Add services to the container.
 builder.Services.AddCookieSettings();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -250,6 +234,7 @@ app.UseRouting();
 app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute("default", "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
 app.MapRazorPages();
