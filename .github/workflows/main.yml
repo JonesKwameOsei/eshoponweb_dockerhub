@@ -24,6 +24,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./eShopOnWeb-main
-          file: ./eShopOnWeb-main/src/PublicApi/Dockerfile
+          file: ./eShopOnWeb-main/src/Web/Dockerfile
           push: true
           tags: kwameds/eshoponweb:1.2.1
