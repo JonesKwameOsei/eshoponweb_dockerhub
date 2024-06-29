@@ -23,7 +23,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./eShopOnWeb-main/src/Web  
+          context: ./eShopOnWeb-main
           file: ./eShopOnWeb-main/src/Web/Dockerfile
           push: true
           tags: kwameds/eshoponweb:1.0.1
