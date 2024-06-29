@@ -9,13 +9,11 @@
 #  docker run --name eshopweb --rm -it -p 5106:5106 web
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
 COPY *.sln .
 COPY . .
-WORKDIR /app/src/Web
-RUN dotnet restore
+WORKDIR /app/src/Web/
+RUN dotnet restore 
 
 RUN dotnet publish -c Release -o out
 
