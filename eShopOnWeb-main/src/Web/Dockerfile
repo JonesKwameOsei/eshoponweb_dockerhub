@@ -43,7 +43,7 @@ COPY . .
 WORKDIR /app/src/Web
 RUN dotnet restore "Web.csproj"
 
-WORKDIR "/src/Web"
+WORKDIR "/app/src/Web"
 RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Stage 3: Publish image
