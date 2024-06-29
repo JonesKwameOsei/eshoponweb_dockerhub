@@ -19,13 +19,10 @@ RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 5106:8080
-EXPOSE 5200:8080
-EXPOSE 5300:8080
+EXPOSE 5106
+EXPOSE 5200
+EXPOSE 5300
 
 COPY --from=build /app/src/Web/out ./
-
-# Optional: Set this here if not setting it from docker-compose.yml
-# ENV ASPNETCORE_ENVIRONMENT Development
 
 ENTRYPOINT ["dotnet", "Web.dll"]
