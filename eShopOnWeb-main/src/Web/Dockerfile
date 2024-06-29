@@ -38,10 +38,11 @@ EXPOSE 8081
 # Stage 2: Build image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/Web/Web.csproj", "Web/"]
-RUN dotnet restore "Web/Web.csproj"
+COPY *.sln .
 COPY . .
+WORKDIR /app/src/Web
+RUN dotnet restore 
+
 WORKDIR "/src/Web"
 RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
