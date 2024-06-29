@@ -29,25 +29,28 @@
 
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+# Stage 1: Base image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Stage 2: Build image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Web.csproj", "Web/"]
-RUN dotnet restore "./Web.csproj"
+COPY ["src/Web/Web.csproj", "src/Web/"]
+RUN dotnet restore "src/Web/Web.csproj"
 COPY . .
 WORKDIR "/src/Web"
-RUN dotnet build "./Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# Stage 3: Publish image
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# Stage 4: Final image
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
