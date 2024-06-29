@@ -41,10 +41,12 @@ ARG BUILD_CONFIGURATION=Release
 COPY *.sln .
 COPY . .
 WORKDIR /app/src/Web
-RUN dotnet restore "Web.csproj"
+RUN dotnet restore
 
-WORKDIR "/app/src/Web"
-RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish -c Release -o out
+
+WORKDIR /app
+COPY --from=build /app/src/Web/out ./
 
 # Stage 3: Publish image
 FROM build AS publish
