@@ -26,4 +26,4 @@ jobs:
           context: ./eShopOnWeb-main
           file: ./eShopOnWeb-main/src/Web/Dockerfile
           push: true
-          tags: kwameds/eshoponweb:1.0.1
+          tags: kwameds/eshoponweb:1.1.1
