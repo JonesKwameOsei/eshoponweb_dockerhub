@@ -39,8 +39,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Web/Web.csproj", "src/Web/"]
-RUN dotnet restore "src/Web/Web.csproj"
+COPY ["src/Web/Web.csproj", "Web/"]
+RUN dotnet restore "Web/Web.csproj"
 COPY . .
 WORKDIR "/src/Web"
 RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
