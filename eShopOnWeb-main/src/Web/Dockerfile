@@ -41,7 +41,7 @@ ARG BUILD_CONFIGURATION=Release
 COPY *.sln .
 COPY . .
 WORKDIR /app/src/Web
-RUN dotnet restore 
+RUN dotnet restore "Web.csproj"
 
 WORKDIR "/src/Web"
 RUN dotnet build "Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
