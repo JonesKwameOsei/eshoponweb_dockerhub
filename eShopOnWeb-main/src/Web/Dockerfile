@@ -35,7 +35,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copy the solution file and restore dependencies
-COPY eShopOnWeb-main/eShopOnWeb.sln .
+COPY *.sln .
 
 # Copy the rest of the application code
 COPY . .
@@ -49,7 +49,7 @@ RUN dotnet publish -c Release -o out
 # Stage 2: Create the final image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app/src/Web/out ./
 
 # Expose port 80
 EXPOSE 80
