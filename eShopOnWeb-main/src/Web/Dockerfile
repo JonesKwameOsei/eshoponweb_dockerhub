@@ -7,25 +7,55 @@
 #
 # RUN COMMAND
 #  docker run --name eshopweb --rm -it -p 5106:5106 web
+
+
+# FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# WORKDIR /app
+
+# COPY *.sln .
+# COPY . .
+# WORKDIR /app/src/Web/
+# RUN dotnet restore 
+
+# RUN dotnet publish -c Release -o out
+
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# WORKDIR /app
+# EXPOSE 5106
+# EXPOSE 5200
+# EXPOSE 5300
+
+# COPY --from=build /app/src/Web/out ./
+
+# ENTRYPOINT ["dotnet", "Web.dll"]
+
+
+# Stage 1: Build the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY *.sln .
+# Copy the solution file and restore dependencies
+COPY eShopOnWeb-main/eShopOnWeb.sln .
+
+# Copy the rest of the application code
 COPY . .
-WORKDIR /app/src/Web/
-RUN dotnet restore 
+
+# Build and publish the project
+WORKDIR /app/src/Web
+RUN dotnet restore
 
 RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+
+
+# Stage 2: Create the final image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-EXPOSE 5106:8080
-EXPOSE 5200:8080
-EXPOSE 5300:8080
+COPY --from=build /app/publish .
 
-COPY --from=build /app/src/Web/out ./
+# Expose port 80
+EXPOSE 80
 
-# Optional: Set this here if not setting it from docker-compose.yml
-# ENV ASPNETCORE_ENVIRONMENT Development
-
+# Specify the DLL to run
 ENTRYPOINT ["dotnet", "Web.dll"]
