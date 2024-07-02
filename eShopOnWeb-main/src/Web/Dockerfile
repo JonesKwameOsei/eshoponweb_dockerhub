@@ -46,26 +46,13 @@ RUN dotnet restore
 
 RUN dotnet publish -c Release -o out
 
-
-
-
 # Stage 2: Create the final image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-<<<<<<< HEAD
 COPY --from=build /app/publish .
-=======
-EXPOSE 5106
-EXPOSE 5200
-EXPOSE 5300
->>>>>>> f6902aef2d469404658c2435236d9c8775202525
 
 # Expose port 80
 EXPOSE 80
 
-<<<<<<< HEAD
 # Specify the DLL to run
 ENTRYPOINT ["dotnet", "Web.dll"]
-=======
-ENTRYPOINT ["dotnet", "Web.dll"]
->>>>>>> f6902aef2d469404658c2435236d9c8775202525
