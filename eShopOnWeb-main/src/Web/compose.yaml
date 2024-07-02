@@ -7,6 +7,7 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
+<<<<<<< HEAD
 # services:
 #   server:
 #     build:
@@ -14,6 +15,26 @@
 #       target: final
 #     ports:
 #       - 8080:8080
+=======
+#services:
+ # server:
+  #  build:
+   #   context: .
+    #  target: final
+    #ports:
+     # - 8080:8080
+
+version: '3.8'
+
+services:
+  web:
+    image: your_docker_image_name
+    ports:
+      - "5106:5106"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+- ASPNETCORE_URLS=http://+:5106
+>>>>>>> f6902aef2d469404658c2435236d9c8775202525
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
